@@ -6,6 +6,7 @@ import { WritingScreen } from './components/WritingScreen';
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { ReflectionScreen } from './components/ReflectionScreen';
 import { ThankYouScreen } from './components/ThankYouScreen';
+import { supabase } from '../lib/supabase';
 
 type Group = 'A' | 'B';
 type Choice = 'sooner' | 'later';
@@ -49,6 +50,26 @@ export default function App() {
       updated[qIdx] = choice;
       return updated;
     });
+  };
+
+  const handleFinalSubmit = async () => {
+    const { error } = await supabase.from('responses').insert({
+      group_label: group,
+      pre_choice_1: preChoices[0],
+      pre_choice_2: preChoices[1],
+      pre_choice_3: preChoices[2],
+      post_choice_1: postChoices[0],
+      post_choice_2: postChoices[1],
+      post_choice_3: postChoices[2],
+      writing_text: writingText,
+      reflection_text: reflectionText,
+    });
+
+    if (error) {
+      console.error('Error saving response to Supabase:', error);
+    }
+
+    next();
   };
 
   const handlePostChoice = (qIdx: number, choice: Choice) => {
@@ -187,7 +208,7 @@ export default function App() {
             group={group}
             text={reflectionText}
             onChange={setReflectionText}
-            onDone={next}
+            onDone={handleFinalSubmit}
           />
         )}
 
