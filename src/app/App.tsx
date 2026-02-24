@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { ChoiceInstructionsScreen } from './components/ChoiceInstructionsScreen';
